@@ -50,18 +50,12 @@ def get_args() -> Args:
 # --------------------------------------------------
 def main() -> None:
     args = get_args()
-    print(f"Creating table for release '{args.version}'")
     releases = get_releases_data(args.json)
 
-    pprint(releases)
-
     if release := find_release_by_version(releases, args.version):
-        release_id = release["id"]
-        print("Found release ({}), contains {} assets".format(release_id, len(release["assets"])))
-        pprint(release)
+        print("Release '{}' has {} assets".format(args.version, len(release["assets"])))
         markdown_table = generate_markdown_table(release)
-        print(markdown_table)
-        update_release_body(release_id, markdown_table)
+        update_release_body(release["id"], markdown_table)
         print(f"Release '{args.version}' updated successfully.")
     else:
         print(f"Release version '{args.version}' not found.")
@@ -128,9 +122,8 @@ def generate_markdown_table(release) -> str:
     table += "|---------|----------|-------------|\n"
 
     for asset in release["assets"]:
-        print(">>> Asset {}".format(asset["name"]))
         if info := extract_os_arch_from_filename(asset["name"]):
-            print(f"     - os {info.os} arch {info.arch}")
+            print(">>> Asset {}".format(asset["name"]))
             download_url = asset["browser_download_url"]
             table += f"| {info.os}  | {info.arch}  | [Download]({download_url}) |\n"
 
