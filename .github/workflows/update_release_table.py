@@ -5,7 +5,7 @@ import argparse
 import os
 import re
 import json
-#from pprint import pprint
+from pprint import pprint
 from typing import NamedTuple, Optional, TextIO
 
 # GitHub repository details
@@ -50,12 +50,15 @@ def get_args() -> Args:
 # --------------------------------------------------
 def main() -> None:
     args = get_args()
-    print("Updating for release {args.version}")
+    print(f"Creating table for release '{args.version}'")
     releases = get_releases_data(args.json)
+
+    pprint(releases)
 
     if release := find_release_by_version(releases, args.version):
         release_id = release["id"]
         print("Found release ({}), contains {} assets".format(release_id, len(release["assets"])))
+        pprint(release)
         markdown_table = generate_markdown_table(release)
         update_release_body(release_id, markdown_table)
         print(f"Release '{args.version}' updated successfully.")
