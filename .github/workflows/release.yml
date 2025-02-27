@@ -57,6 +57,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
   make-table:
+    runs-on: ubuntu-latest
     needs: upload-assets
       - name: Set up Python
         uses: actions/setup-python@v4
