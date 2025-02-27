@@ -60,6 +60,7 @@ def main() -> None:
         print("Found release ({}), contains {} assets".format(release_id, len(release["assets"])))
         pprint(release)
         markdown_table = generate_markdown_table(release)
+        print(markdown_table)
         update_release_body(release_id, markdown_table)
         print(f"Release '{args.version}' updated successfully.")
     else:
