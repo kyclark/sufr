@@ -9,7 +9,7 @@ import json
 from typing import NamedTuple, Optional, TextIO
 
 # GitHub repository details
-REPO = "TravisWheelerLab/sufr"
+REPO = "kyclark/sufr"
 API_URL = f"https://api.github.com/repos/{REPO}/releases"
 
 
@@ -50,15 +50,17 @@ def get_args() -> Args:
 # --------------------------------------------------
 def main() -> None:
     args = get_args()
+    print("Updating for release {args.version}")
     releases = get_releases_data(args.json)
 
-    if release_to_update := find_release_by_version(releases, args.version):
-        release_id = release_to_update["id"]
-        markdown_table = generate_markdown_table(release_to_update)
+    if release := find_release_by_version(releases, args.version):
+        release_id = release["id"]
+        print("Found release ({}), contains {} assets".format(release_id, len(release["assets"])))
+        markdown_table = generate_markdown_table(release)
         update_release_body(release_id, markdown_table)
-        print(f"Release {args.version} updated successfully.")
+        print(f"Release '{args.version}' updated successfully.")
     else:
-        print(f"Release with version {args.version} not found.")
+        print(f"Release version '{args.version}' not found.")
 
 
 # --------------------------------------------------
